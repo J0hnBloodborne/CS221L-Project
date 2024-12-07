@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <vector>
 #include <queue>
 
@@ -10,9 +10,10 @@ class FileSystemNode{
 public:
     string name;
     bool isFile;
-    unordered_map<string, FileSystemNode*> children;    // Much better lookup.
-
-    FileSystemNode(string nodeName, bool file = false) : name(nodeName), isFile(file) {}
+    map<string, FileSystemNode*> children;
+    int size; // For file size in bytes or any unit.
+    
+    FileSystemNode(string nodeName, bool file = false, int fileSize = 0) : name(nodeName), isFile(file), size(fileSize) {}
 };
 
 class FileSystemTree{
@@ -35,6 +36,18 @@ private:
 
         for(auto& child : node->children) {deleteNode(child.second);}
         delete node;
+    }
+
+    // Helper function to calculate directory size.
+    int calculateDirectorySize(FileSystemNode* node){
+        if (!node) return 0;
+        if (node->isFile) return node->size;
+
+        int totalSize = 0;
+        for (auto& child : node->children) {
+            totalSize += calculateDirectorySize(child.second);
+        }
+        return totalSize;
     }
 
 public:
@@ -60,12 +73,12 @@ public:
     }
 
     //  Adding file(directory).
-    void insert(const vector<string>& path, bool isFile) {
+    void insert(const vector<string>& path, bool isFile, int fileSize = 0) {
         FileSystemNode* current = root;
         for (size_t i = 0; i < path.size(); ++i) {
             const string& part = path[i];
             if (current->children.find(part) == current->children.end()) {
-                current->children[part] = new FileSystemNode(part, i == path.size() - 1 && isFile);
+                current->children[part] = new FileSystemNode(part, i == path.size() - 1 && isFile, fileSize);
             }
             current = current->children[part];
         }
@@ -109,6 +122,18 @@ public:
 
         return false;
     }
+
+    int getDirectorySize(const vector<string>& path) {
+        FileSystemNode* current = root;
+        for (const string& part : path) {
+            if (current->children.find(part) == current->children.end()) {
+                cout << "Path not found." << endl;
+                return -1;
+            }
+            current = current->children[part];
+        }
+        return calculateDirectorySize(current);
+    }
 };
 
 int main() {
@@ -120,6 +145,9 @@ int main() {
     fs.insert({"home", "user", "file2.txt"}, true);
     fs.insert({"home", "docs"}, false);
     fs.insert({"home", "docs", "report.docx"}, true);
+    fs.insert({"home", "user", "file1.txt"}, true, 500); // 500 bytes
+    fs.insert({"home", "user", "file2.txt"}, true, 300);
+    fs.insert({"home", "docs", "report.docx"}, true, 1500);
 
     cout << "DFS Traversal:" << endl;
     fs.dfs();
@@ -134,4 +162,7 @@ int main() {
 
     cout << "\nDFS Traversal After Deletion:" << endl;
     fs.dfs();
+
+    cout << "Size of 'home/user': " << fs.getDirectorySize({"home", "user"}) << " bytes" << endl;
+    cout << "Size of 'home': " << fs.getDirectorySize({"home"}) << " bytes" << endl;
 }
