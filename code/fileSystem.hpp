@@ -73,11 +73,11 @@ public:
     }
 
     //  Adding file(directory).
-    void insert(const vector<string>& path, bool isFile, int fileSize = 0) {
+    void insert(const vector<string>& path, bool isFile, int fileSize = 0){
         FileSystemNode* current = root;
-        for (size_t i = 0; i < path.size(); ++i) {
+        for (size_t i = 0; i < path.size(); ++i){
             const string& part = path[i];
-            if (current->children.find(part) == current->children.end()) {
+            if (current->children.find(part) == current->children.end()){
                 current->children[part] = new FileSystemNode(part, i == path.size() - 1 && isFile, fileSize);
             }
             current = current->children[part];
@@ -85,7 +85,7 @@ public:
     }
 
     // Deletion: Remove a file or directory
-    bool remove(const vector<string>& path) {
+    bool remove(const vector<string>& path){
         FileSystemNode* current = root;
         FileSystemNode* parent = nullptr;
         string key = "";
@@ -123,10 +123,11 @@ public:
         return false;
     }
 
-    int getDirectorySize(const vector<string>& path) {
+    // Give the size in bytes of directory.
+    int getDirectorySize(const vector<string>& path){
         FileSystemNode* current = root;
-        for (const string& part : path) {
-            if (current->children.find(part) == current->children.end()) {
+        for (const string& part : path){
+            if (current->children.find(part) == current->children.end()){
                 cout << "Path not found." << endl;
                 return -1;
             }

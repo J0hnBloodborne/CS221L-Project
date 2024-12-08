@@ -1,38 +1,114 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include "fileSystem.hpp"
 
 using namespace std;
 
-int main() {
+// Helper function to split user input into a vector of path components
+vector<string> splitPath(const string& path){
+    vector<string> result;
+    size_t start = 0, end = 0;
+    while((end = path.find('/', start)) != string::npos){
+        result.push_back(path.substr(start, end - start));
+        start = end + 1;
+    }
+    if (start < path.length()){
+        result.push_back(path.substr(start));
+    }
+    return result;
+}
+
+void displayMenu(){
+    cout << "\nFile System Manager - Menu" << endl;
+    cout << "1. Display File System (DFS)" << endl;
+    cout << "2. Display File System (BFS)" << endl;
+    cout << "3. Add File/Directory" << endl;
+    cout << "4. Delete File/Directory" << endl;
+    cout << "5. Search for File/Directory" << endl;
+    cout << "6. Get Directory Size" << endl;
+    cout << "7. Exit" << endl;
+    cout << "Enter your choice: ";
+}
+
+int main(){
     FileSystemTree fs;
 
-    // Insert directories and files
-    fs.insert({"home"}, false);
-    fs.insert({"home", "user"}, false);
-    fs.insert({"home", "user", "file1.txt"}, true);
-    fs.insert({"home", "user", "file2.txt"}, true);
-    fs.insert({"home", "docs"}, false);
-    fs.insert({"home", "docs", "report.docx"}, true);
+    while(true){
+        displayMenu();
 
-    // Display the file system (DFS)
-    cout << "DFS Traversal:" << endl;
-    fs.dfs();
+        int choice;
+        cin >> choice;
+        cin.ignore(); // Ignore leftover newline character
 
-    // Display the file system (BFS)
-    cout << "\nBFS Traversal:" << endl;
-    fs.bfs();
+        switch (choice) {
+            case 1:{
+                cout << "\nFile System (DFS Traversal):" << endl;
+                fs.dfs();
+                break;
+            }
+            case 2:{
+                cout << "\nFile System (BFS Traversal):" << endl;
+                fs.bfs();
+                break;
+            }
+            case 3:{
+                cout << "\nEnter the path to add (e.g., 'home/user/docs'): ";
+                string pathInput;
+                getline(cin, pathInput);
+                vector<string> path = splitPath(pathInput);
 
-    // Search for a file
-    cout << "\nSearching for 'file1.txt': " << (fs.search("file1.txt") ? "Found" : "Not Found") << endl;
-    cout << "Searching for 'missing.txt': " << (fs.search("missing.txt") ? "Found" : "Not Found") << endl;
+                cout << "Is this a file? (1 for Yes, 0 for No): ";
+                bool isFile;
+                cin >> isFile;
 
-    // Delete a file
-    cout << "\nDeleting 'file1.txt': " << (fs.remove({"home", "user", "file1.txt"}) ? "Deleted" : "Not Found") << endl;
+                int fileSize = 0;
+                if (isFile) {
+                    cout << "Enter the size of the file in bytes: ";
+                    cin >> fileSize;
+                }
 
-    // Display the file system again
-    cout << "\nDFS Traversal After Deletion:" << endl;
-    fs.dfs();
+                fs.insert(path, isFile, fileSize);
+                cout << "Added successfully." << endl;
+                break;
+            }
+            case 4:{
+                cout << "\nEnter the path to delete (e.g., 'home/user/docs'): ";
+                string pathInput;
+                getline(cin, pathInput);
+                vector<string> path = splitPath(pathInput);
 
-    return 0;
+                if (fs.remove(path)) {cout << "Deleted successfully." << endl;} 
+                else {cout << "Failed to delete. Path not found." << endl;}
+                break;
+            }
+            case 5:{
+                cout << "\nEnter the name of the file/directory to search: ";
+                string name;
+                getline(cin, name);
+
+                if (fs.search(name)) {cout << "Found '" << name << "' in the file system." << endl;} 
+                else {cout << "'" << name << "' not found in the file system." << endl;}
+                break;
+            }
+            case 6:{
+                cout << "\nEnter the path to calculate size (e.g., 'home/user'): ";
+                string pathInput;
+                getline(cin, pathInput);
+                vector<string> path = splitPath(pathInput);
+
+                int size = fs.getDirectorySize(path);
+                if (size != -1) {cout << "Total size: " << size << " bytes." << endl;}
+                break;
+            }
+            case 7:{
+                cout << "Exiting File System Manager. Goodbye!" << endl;
+                return 0;
+            }
+            default:{
+                cout << "Invalid choice. Please try again." << endl;
+                break;
+            }
+        }
+    }
 }
