@@ -22,12 +22,11 @@ vector<string> splitPath(const string& path){
 void displayMenu(){
     cout << "\nFile System Manager - Menu" << endl;
     cout << "1. Display File System (DFS)" << endl;
-    cout << "2. Display File System (BFS)" << endl;
-    cout << "3. Add File/Directory" << endl;
-    cout << "4. Delete File/Directory" << endl;
-    cout << "5. Search for File/Directory" << endl;
-    cout << "6. Get Directory Size" << endl;
-    cout << "7. Exit" << endl;
+    cout << "2. Add File/Directory" << endl;
+    cout << "3. Delete File/Directory" << endl;
+    cout << "4. Search for File/Directory" << endl;
+    cout << "5. Get Directory Size" << endl;
+    cout << "6. Exit" << endl;
     cout << "Enter your choice: ";
 }
 
@@ -48,11 +47,6 @@ int runner(){
                 break;
             }
             case 2:{
-                cout << "\nFile System (BFS Traversal):" << endl;
-                fs.bfs();
-                break;
-            }
-            case 3:{
                 cout << "\nEnter the path to add (e.g., 'home/user/docs'): ";
                 string pathInput;
                 getline(cin, pathInput);
@@ -72,7 +66,7 @@ int runner(){
                 cout << "Added successfully." << endl;
                 break;
             }
-            case 4:{
+            case 3:{
                 cout << "\nEnter the path to delete (e.g., 'home/user/docs'): ";
                 string pathInput;
                 getline(cin, pathInput);
@@ -82,7 +76,7 @@ int runner(){
                 else {cout << "Failed to delete. Path not found." << endl;}
                 break;
             }
-            case 5:{
+            case 4:{
                 cout << "\nEnter the name of the file/directory to search: ";
                 string name;
                 getline(cin, name);
@@ -91,7 +85,7 @@ int runner(){
                 else {cout << "'" << name << "' not found in the file system." << endl;}
                 break;
             }
-            case 6:{
+            case 5:{
                 cout << "\nEnter the path to calculate size (e.g., 'home/user'): ";
                 string pathInput;
                 getline(cin, pathInput);
@@ -101,7 +95,7 @@ int runner(){
                 if (size != -1) {cout << "Total size: " << size << " bytes." << endl;}
                 break;
             }
-            case 7:{
+            case 6:{
                 cout << "Exiting File System Manager. Goodbye!" << endl;
                 return 0;
             }

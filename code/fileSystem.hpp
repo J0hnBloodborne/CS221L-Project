@@ -56,21 +56,6 @@ public:
 
     //  Traversal functions.
     void dfs(){dfsHelper(root, 0);}
-    void bfs(){
-        queue<FileSystemNode*> q;
-        q.push(root);
-
-        while(!q.empty()){
-            FileSystemNode* current = q.front();
-            q.pop();
-
-            cout << (current->isFile ? current->name : current->name + "/") << endl;
-
-            if (!current->isFile){
-                for(auto& child : current->children) {q.push(child.second);}
-            }
-        }
-    }
 
     //  Adding file(directory).
     void insert(const vector<string>& path, bool isFile, int fileSize = 0){
