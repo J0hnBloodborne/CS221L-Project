@@ -3,6 +3,4 @@
 
 using namespace std;
 
-int main(){
-    runner();
-}
+int main() {runner();}

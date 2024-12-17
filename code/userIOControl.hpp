@@ -6,16 +6,14 @@
 using namespace std;
 
 // Helper function to split user input into a vector of path components
-vector<string> splitPath(const string& path){
+vector<string> splitPath(string& path){
     vector<string> result;
-    size_t start = 0, end = 0;
+    int start = 0, end = 0;
     while((end = path.find('/', start)) != string::npos){
         result.push_back(path.substr(start, end - start));
         start = end + 1;
     }
-    if (start < path.length()){
-        result.push_back(path.substr(start));
-    }
+    if (start < path.length()) {result.push_back(path.substr(start));}
     return result;
 }
 
@@ -40,7 +38,7 @@ int runner(){
         cin >> choice;
         cin.ignore(); // Ignore leftover newline character
 
-        switch (choice) {
+        switch (choice){
             case 1:{
                 cout << "\nFile System (DFS Traversal):" << endl;
                 fs.dfs();

@@ -13,7 +13,7 @@ public:
     map<string, FileSystemNode*> children;
     int size; // For file size in bytes or any unit.
     
-    FileSystemNode(string nodeName, bool file = false, int fileSize = 0) : name(nodeName), isFile(file), size(fileSize) {}
+    FileSystemNode(string nodeName, bool file = false, int fileSize = 0) : name(nodeName), isFile(file), size(fileSize){}
 };
 
 class FileSystemTree{
@@ -26,9 +26,7 @@ private:
         for(int i = 0; i < depth; ++i) {cout << "  ";}
         cout << (node->isFile ? node->name : node->name + "/") << endl;
 
-        if(!node->isFile){
-            for(auto& child : node->children) {dfsHelper(child.second, depth + 1);}
-        }
+        if(!node->isFile) {for(auto& child : node->children) {dfsHelper(child.second, depth + 1);}}
     }
 
     void deleteNode(FileSystemNode* node){
@@ -40,13 +38,11 @@ private:
 
     // Helper function to calculate directory size.
     int calculateDirectorySize(FileSystemNode* node){
-        if (!node) return 0;
-        if (node->isFile) return node->size;
+        if (!node) {return 0;}
+        if (node->isFile) {return node->size;}
 
         int totalSize = 0;
-        for (auto& child : node->children) {
-            totalSize += calculateDirectorySize(child.second);
-        }
+        for (auto& child : node->children) {totalSize += calculateDirectorySize(child.second);}
         return totalSize;
     }
 
@@ -58,10 +54,10 @@ public:
     void dfs(){dfsHelper(root, 0);}
 
     //  Adding file(directory).
-    void insert(const vector<string>& path, bool isFile, int fileSize = 0){
+    void insert(vector<string>& path, bool isFile, int fileSize = 0){
         FileSystemNode* current = root;
         for (size_t i = 0; i < path.size(); ++i){
-            const string& part = path[i];
+            string& part = path[i];
             if (current->children.find(part) == current->children.end()){
                 current->children[part] = new FileSystemNode(part, i == path.size() - 1 && isFile, fileSize);
             }
@@ -70,15 +66,15 @@ public:
     }
 
     // Deletion: Remove a file or directory
-    bool remove(const vector<string>& path){
+    bool remove(vector<string>& path){
         FileSystemNode* current = root;
         FileSystemNode* parent = nullptr;
         string key = "";
 
-        for (const string& part : path) {
+        for(string& part : path){
             if (current->children.find(part) == current->children.end()){
                 cout << "Path not found: ";
-                for (const auto& p : path) {cout << "/" << p;}
+                for (string& p : path) {cout << "/" << p;}
                 cout << endl;
                 return false;
             }
@@ -97,21 +93,19 @@ public:
     }
 
     // Search: Find a file or directory by name
-    bool search(const string& name, FileSystemNode* node = nullptr){
-        if (!node) node = root;
+    bool search(string& name, FileSystemNode* node = nullptr){
+        if (!node) {node = root;}
         if (node->name == name) {return true;}
 
-        for (auto& child : node->children) {
-            if (search(name, child.second)) {return true;}
-        }
+        for (auto& child : node->children) {if (search(name, child.second)) {return true;}}
 
         return false;
     }
 
     // Give the size in bytes of directory.
-    int getDirectorySize(const vector<string>& path){
+    int getDirectorySize(vector<string>& path){
         FileSystemNode* current = root;
-        for (const string& part : path){
+        for (string& part : path){
             if (current->children.find(part) == current->children.end()){
                 cout << "Path not found." << endl;
                 return -1;
