@@ -7,7 +7,6 @@
 //<unordered_set>  // For unordered_set (e.g., for visited nodes during traversal)
 //<algorithm>      // For algorithms like std::remove_if
 
-
 using namespace std;
 
 class FileSystemNode{
@@ -15,7 +14,7 @@ public:
     string name;
     bool isFile;
     map<string, FileSystemNode*> children;
-    int size; // For file size in bytes or any unit.
+    int size;
     vector<FileSystemNode*> symbolicLinks; // To handle symbolic links
     
     FileSystemNode(string nodeName, bool file = false, int fileSize = 0) : name(nodeName), isFile(file), size(fileSize){}
@@ -38,10 +37,8 @@ private:
             cout << "-> " << link->name << (link->isFile ? "" : "/") << endl;
         }
 
-        if(!node->isFile) {
-            for(auto& child : node->children) {
-                dfsHelper(child.second, depth + 1, visited);
-            }
+        if(!node->isFile){
+            for(auto& child : node->children) {dfsHelper(child.second, depth + 1, visited);}
         }
     }
 
@@ -168,27 +165,19 @@ public:
 	    return false;
 	}
 
-
     // Search: Find a file or directory by name
     bool search(string& name, FileSystemNode* node = nullptr){
 	    if (!node) {node = root;}
 	
 	    // Check the node itself
 	    if (node->name == name) {return true;}
-	
 	    // Search children normally
-	    for (auto& child : node->children) {
-	        if (search(name, child.second)) {return true;}
-	    }
-	
+	    for (auto& child : node->children) {if (search(name, child.second)) {return true;}}
 	    // Search through symbolic links
-	    for (auto& link : node->symbolicLinks) {
-	        if (search(name, link)) {return true;}
-	    }
+	    for (auto& link : node->symbolicLinks) {if (search(name, link)) {return true;}}
 	
 	    return false;
 	}
-
 
     // Give the size in bytes of directory.
     int getDirectorySize(vector<string>& path){

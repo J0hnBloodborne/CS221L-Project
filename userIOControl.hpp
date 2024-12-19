@@ -99,7 +99,6 @@ int runner(){
                 break;
             }
             case 6:{
-                // Adding symbolic link
                 cout << "\nEnter the source path for the symbolic link (e.g., 'home/user/docs'): ";
                 string sourcePathInput;
                 getline(cin, sourcePathInput);
@@ -110,16 +109,12 @@ int runner(){
                 getline(cin, targetPathInput);
                 vector<string> targetPath = splitPath(targetPathInput);
 
-                if (fs.addSymbolicLink(sourcePath, targetPath)) {
-                    cout << "Symbolic link added successfully." << endl;
-                } else {
-                    cout << "Failed to add symbolic link." << endl;
-                }
+                if (fs.addSymbolicLink(sourcePath, targetPath)) {cout << "Symbolic link added successfully." << endl;} 
+                else {cout << "Failed to add symbolic link." << endl;}
                 break;
             }
             case 7:{
                 cout << "Exiting File System Manager. Goodbye!" << endl;
-                return 0;
             }
             default:{
                 cout << "Invalid choice. Please try again." << endl;
