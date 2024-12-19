@@ -1,6 +1,7 @@
-#include <iostream>
-#include <string>
-#include <vector>
+#include<bits/stdc++.h>
+//<vector>         // For working with vectors
+//<unordered_map>  // For unordered_map (e.g., used for children map)
+//<unordered_set>  // For unordered_set (e.g., used for visited nodes)
 #include "fileSystem.hpp"
 
 using namespace std;
@@ -24,7 +25,8 @@ void displayMenu(){
     cout << "3. Delete File/Directory" << endl;
     cout << "4. Search for File/Directory" << endl;
     cout << "5. Get Directory Size" << endl;
-    cout << "6. Exit" << endl;
+    cout << "6. Add Symbolic Link" << endl;
+    cout << "7. Exit" << endl;
     cout << "Enter your choice: ";
 }
 
@@ -94,8 +96,22 @@ int runner(){
                 break;
             }
             case 6:{
+                cout << "\nEnter the source path for the symbolic link (e.g., 'home/user/docs'): ";
+                string sourcePathInput;
+                getline(cin, sourcePathInput);
+                vector<string> sourcePath = splitPath(sourcePathInput);
+
+                cout << "Enter the target path for the symbolic link (e.g., 'home/user/target'): ";
+                string targetPathInput;
+                getline(cin, targetPathInput);
+                vector<string> targetPath = splitPath(targetPathInput);
+
+                if (fs.addSymbolicLink(sourcePath, targetPath)) {cout << "Symbolic link added successfully." << endl;} 
+                else {cout << "Failed to add symbolic link." << endl;}
+                break;
+            }
+            case 7:{
                 cout << "Exiting File System Manager. Goodbye!" << endl;
-                return 0;
             }
             default:{
                 cout << "Invalid choice. Please try again." << endl;
