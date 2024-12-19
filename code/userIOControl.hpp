@@ -26,11 +26,14 @@ void displayMenu(){
     cout << "4. Search for File/Directory" << endl;
     cout << "5. Get Directory Size" << endl;
     cout << "6. Add Symbolic Link" << endl;
-    cout << "7. Exit" << endl;
+    cout << "7. Copy File/Directory" << endl;
+    cout << "8. Rename File/Directory" << endl;
+    cout << "9. Move File/Directory" << endl;
+    cout << "10. Exit" << endl;
     cout << "Enter your choice: ";
 }
 
-int runner(){
+void runner(){
     FileSystemTree fs;
 
     while(true){
@@ -110,8 +113,55 @@ int runner(){
                 else {cout << "Failed to add symbolic link." << endl;}
                 break;
             }
-            case 7:{
+            case 7: {
+                cout << "\nEnter the source path for the file/directory to be copied (e.g., 'home/user/docs'): ";
+                string sourcePathInput;
+                getline(cin, sourcePathInput);
+                vector<string> sourcePath = splitPath(sourcePathInput);
+
+                cout << "Enter the target path (e.g., 'home/user/target'): ";
+                string targetPathInput;
+                getline(cin, targetPathInput);
+                vector<string> targetPath = splitPath(targetPathInput);
+
+                if (fs.copy(sourcePath, targetPath)) {
+                    cout << "Copied successfully." << endl;
+                } else {
+                    cout << "Failed to copy. Ensure the source and target paths are valid and meet the requirements." << endl;
+                }
+                break;
+            }
+            case 8:{
+                cout << "\nEnter the name of the file/directory to search: ";
+                string name;
+                getline(cin, name);
+
+                cout << "\nEnter the name of the file/directory to rename to: ";
+                string newName;
+                getline(cin, newName);
+
+                if (fs.rename(name, newName)) {cout << "Found '" << name << "' in the file system." << endl;} 
+                else {cout << "'" << newName << "' not found in the file system." << endl;}
+                break;
+            }
+            case 9: {
+                cout << "\nEnter the source path for the file/directory to be moved (e.g., 'home/user/docs'): ";
+                string sourcePathInput;
+                getline(cin, sourcePathInput);
+                vector<string> sourcePath = splitPath(sourcePathInput);
+
+                cout << "Enter the target path (e.g., 'home/user/target'): ";
+                string targetPathInput;
+                getline(cin, targetPathInput);
+                vector<string> targetPath = splitPath(targetPathInput);
+
+                if (fs.move(sourcePath, targetPath)) {cout << "Moved successfully." << endl;} 
+                else {cout << "Failed to copy. Ensure the source and target paths are valid and meet the requirements." << endl;}
+                break;
+            }
+            case 10:{
                 cout << "Exiting File System Manager. Goodbye!" << endl;
+                return;
             }
             default:{
                 cout << "Invalid choice. Please try again." << endl;

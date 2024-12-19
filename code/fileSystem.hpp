@@ -120,7 +120,98 @@ public:
         source->symbolicLinks.push_back(target);
         return true;
     }
- 	
+
+    FileSystemNode* deepCopy(FileSystemNode* node) {
+        if (!node) return nullptr;
+
+        FileSystemNode* newNode = new FileSystemNode(node->name, node->isFile, node->size);
+        for (auto& child : node->children) {
+            newNode->children[child.first] = deepCopy(child.second);
+        }
+        return newNode;
+    }
+
+    bool copy(vector<string>& sourcePath, vector<string>& targetPath) {
+        FileSystemNode* source = root;
+        FileSystemNode* target = root;
+
+        for (string& part : sourcePath) {
+            if (source->children.find(part) == source->children.end()) {
+                cout << "Source path not found." << endl;
+                return false;
+            }
+            source = source->children[part];
+        }
+
+        for (string& part : targetPath) {
+            if (target->children.find(part) == target->children.end()) {
+                cout << "Target path not found." << endl;
+                return false;
+            }
+            target = target->children[part];
+        }
+
+        if (target->isFile) {
+            cout << "Cannot copy to a file. Target must be a directory." << endl;
+            return false;
+        }
+
+        target->children[source->name] = deepCopy(source);
+
+        return true;
+    }
+
+    bool move(vector<string>& sourcePath, vector<string>& targetPath){
+        FileSystemNode* source = root;
+        FileSystemNode* target = root;
+
+        for (string& part : sourcePath){
+            if (source->children.find(part) == source->children.end()){
+                cout << "Source path not found." << endl;
+                return false;
+            }
+            source = source->children[part];
+        }
+
+        for (string& part : targetPath){
+            if (target->children.find(part) == target->children.end()){
+                cout << "Target path not found." << endl;
+                return false;
+            }
+            target = target->children[part];
+        }
+
+        if (target->isFile) {
+            cout << "Cannot copy to a file. Target must be a directory." << endl;
+            return false;
+        }
+
+        target->children[source->name] = deepCopy(source);
+        remove(sourcePath);
+        
+        return true;
+    }
+  
+    bool rename(string& name, string& newName, FileSystemNode* node = nullptr) {
+        if (!node) {
+            node = root;
+        }
+
+        if (node->name == name) {
+            node->name = newName;
+            return true;
+        }
+
+        // Search children for the node to rename
+        for (auto& child : node->children) {
+            if (rename(name, newName, child.second)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // Deletion: Remove a file or directory
     bool remove(vector<string>& path) {
 	    FileSystemNode* current = root;
